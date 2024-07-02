@@ -52,7 +52,7 @@ export class Client extends EventEmitter {
 			}
 		});
 		this.closed = false;
-		const conStr = `ws://${this.options.server}:${this.options.port}/showdown/websocket`;
+		const conStr = `wss://${this.options.server}/showdown/websocket`;
 		console.log(`Connecting to ${this.options.server}:${this.options.port}...`);
 		this.socket.connect(conStr);
 	}

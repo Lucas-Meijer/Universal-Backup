@@ -65,6 +65,12 @@ Chat.events.on('raw', (/** @type {Room} */room, /** @type {string} */parts) => {
 
 /** @type {ChatCommands} */
 const commands = {
+	host: function (target, room, user) {
+		this.reply(`/mafia host dewbott`);
+		this.reply(`/mafia forceadd snaquaza`);
+		this.reply(`/mafia forceadd alexander489`);
+		this.reply(`/mafia close`);
+	},
 	resetladders: function (target, room, user) {
 		if (!this.can('leader')) return this.reply(`access denied`);
 		ladder.reset();
@@ -83,6 +89,7 @@ const commands = {
 		let [pointsStr, ...targets] = target.split(',');
 		const points = parseInt(pointsStr);
 		mvpLadder.addPoints(points, targets);
+		ladder.addPoints(points*10, targets);
 		this.reply(`gave ${points} mvp points to ${targets.length} users`);
 	},
 	lb: 'ladder',
@@ -96,6 +103,15 @@ const commands = {
 	mvpladder: function (target, room, user) {
 		if (this.can('auth') && room) return room.send(`/adduhtml thtmvp,<details><summary>MVP Leaderboard:</summary>${mvpLadder.visualize()}</details>`);
 		this.replyHTMLPM(`<div><strong>MVP Leaderboard:</strong>${mvpLadder.visualize()}</div>`);
+	},
+	eventpoints: function (target, room, user) {
+		if (!this.can('staff')) return this.reply(access denied);
+		let [pointsStr, ...targets] = target.split(',');
+		const points = parseInt(pointsStr);
+		ladder.addPoints(points, targets);
+		ladder.addPoints(points, [this.room.mafiaTracker.host]);
+		ladder.addPoints(points, Object.keys(this.room.mafiaTracker.players));
+		this.reply(`gave ${points} points to ${targets.length} users and ${[this.room.mafiaTracker.host]}`);
 	},
 };
 
