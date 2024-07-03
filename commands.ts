@@ -56,14 +56,13 @@ const commands: ChatCommands = {
 		Chat.Slaves.LoadCredentials();
 		this.reply(`Reloaded credentials. ${Chat.Slaves.CountCredentials()} accounts are available.`);
 	},
+	alts: function (target, room) {
+		this.reply((room?.alts.get(target)||["Hi"]).join(", ")); 
+	},
 };
 
 Chat.events.on('pm', (room, details) => {
-	if (Config.developers.includes(toId(details[0]))) {
-		if (details[2].startsWith('/invite ')) {
-			Chat.sendMessage('', `/join ${details[2].slice(8)}`);
-		}
-	}
+	
 });
 
 exports.commands = commands;

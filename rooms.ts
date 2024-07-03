@@ -4,6 +4,7 @@ export class Room {
 	roomType: string;
 	/** userid -> name */
 	users: Map<string, string> = new Map();
+	alts: Map<string, string[]> = new Map();
 	auth: Map<string, string> = new Map();
 	game: RoomGame | null = null;
 	mafiaTracker: MafiaTracker | null = null;
@@ -65,6 +66,11 @@ export class Room {
 		const userid = toId(username);
 		this.users.set(userid, username);
 		//this.auth.set(userid, group);
+		
+		// Add to alts
+		if(!this.alts.has(userid)) {
+			this.alts.set(userid, [username]);
+		}
 	}
 
 	userRename(from: string, to: string) {
@@ -83,6 +89,12 @@ export class Room {
 		//this.auth.set(newId, newGroup);
 		debug(`User rename in '${this.roomid}': '${from}' => '${to}'`);
 		if (this.game && this.game.onRename) this.game.onRename(oldId, newName);
+
+		// Add to alts
+		if(!this.alts.has(oldId)) {
+			this.alts.set(oldId, [oldName]);
+		}
+		this.alts.get(oldId)?.add(newName);
 	}
 
 	getAuth(userid: string) {
